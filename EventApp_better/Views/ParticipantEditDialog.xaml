@@ -1,0 +1,101 @@
+<Window x:Class="EventApp.Views.ParticipantEditDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Участник" Height="340" Width="440"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#F5F7FA">
+
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+            <Setter Property="Margin" Value="0,6,0,2"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="BorderBrush" Value="#CBD5E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+        <ControlTemplate x:Key="DialogBtnTemplate" TargetType="Button">
+            <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                    CornerRadius="5" Padding="{TemplateBinding Padding}" Cursor="Hand">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Bd" Property="Opacity" Value="0.85"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </Window.Resources>
+
+    <Border Margin="20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Content="Фамилия *"/>
+                <TextBox Grid.Row="1" Grid.Column="0"
+                         Text="{Binding LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Grid.Row="0" Grid.Column="2" Content="Имя *"/>
+                <TextBox Grid.Row="1" Grid.Column="2"
+                         Text="{Binding FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Grid.Row="2" Grid.Column="0" Content="Email"/>
+                <TextBox Grid.Row="3" Grid.Column="0"
+                         Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Grid.Row="2" Grid.Column="2" Content="Телефон"/>
+                <TextBox Grid.Row="3" Grid.Column="2"
+                         Text="{Binding Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Grid.Row="4" Grid.Column="0" Content="Организация"/>
+                <TextBox Grid.Row="5" Grid.Column="0"
+                         Text="{Binding Organization, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Grid.Row="4" Grid.Column="2" Content="Секция"/>
+                <TextBox Grid.Row="5" Grid.Column="2"
+                         Text="{Binding Section, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal"
+                        HorizontalAlignment="Right" Margin="0,16,0,0">
+                <Button x:Name="BtnCancel" Content="Отмена"
+                        Template="{StaticResource DialogBtnTemplate}"
+                        Background="#EDF2F7" Foreground="#4A5568"
+                        FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
+                        Padding="22,8" Margin="0,0,10,0" BorderThickness="0"
+                        Click="BtnCancel_Click"/>
+                <Button x:Name="BtnOk" Content="Зарегистрировать"
+                        Template="{StaticResource DialogBtnTemplate}"
+                        Background="#276749" Foreground="White"
+                        FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
+                        Padding="22,8" BorderThickness="0"
+                        Click="BtnOk_Click"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

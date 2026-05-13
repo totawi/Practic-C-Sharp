@@ -1,0 +1,212 @@
+<Window x:Class="EventApp.Views.EventDetailPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Детали мероприятия" Height="480" Width="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        Background="#0F172A"
+        AllowsTransparency="False">
+
+    <Window.Resources>
+        <!-- Анимация появления окна -->
+        <Storyboard x:Key="FadeInStoryboard">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             From="0" To="1" Duration="0:0:0.35"
+                             EasingFunction="{StaticResource ease}"/>
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                             From="20" To="0" Duration="0:0:0.35"
+                             EasingFunction="{StaticResource ease}"/>
+        </Storyboard>
+        <CubicEase x:Key="ease" EasingMode="EaseOut"/>
+
+        <!-- Переливающийся фон через LinearGradientBrush + анимация GradientStop -->
+        <LinearGradientBrush x:Key="ShimmerBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop x:Name="GS1" Color="#1E3A5F" Offset="0"/>
+            <GradientStop x:Name="GS2" Color="#2D6A4F" Offset="0.5"/>
+            <GradientStop x:Name="GS3" Color="#4A1942" Offset="1"/>
+        </LinearGradientBrush>
+
+        <ControlTemplate x:Key="BtnTpl" TargetType="Button">
+            <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                    CornerRadius="7" Padding="{TemplateBinding Padding}" Cursor="Hand">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Bd" Property="Opacity" Value="0.82"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </Window.Resources>
+
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <!-- Fade-in окна -->
+                    <DoubleAnimation Storyboard.TargetName="RootGrid"
+                                     Storyboard.TargetProperty="Opacity"
+                                     From="0" To="1" Duration="0:0:0.4">
+                        <DoubleAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                    <DoubleAnimation Storyboard.TargetName="RootTranslate"
+                                     Storyboard.TargetProperty="Y"
+                                     From="24" To="0" Duration="0:0:0.4">
+                        <DoubleAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                    <!-- Переливание цветов фона (бесконечно) -->
+                    <ColorAnimation Storyboard.TargetName="GStop1"
+                                    Storyboard.TargetProperty="Color"
+                                    From="#1E3A5F" To="#0D2137"
+                                    Duration="0:0:2" AutoReverse="True"
+                                    RepeatBehavior="Forever"/>
+                    <ColorAnimation Storyboard.TargetName="GStop2"
+                                    Storyboard.TargetProperty="Color"
+                                    From="#2D6A4F" To="#1A4731"
+                                    Duration="0:0:3" AutoReverse="True"
+                                    RepeatBehavior="Forever"/>
+                    <ColorAnimation Storyboard.TargetName="GStop3"
+                                    Storyboard.TargetProperty="Color"
+                                    From="#4A1942" To="#2D0E28"
+                                    Duration="0:0:2.5" AutoReverse="True"
+                                    RepeatBehavior="Forever"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+
+    <Grid x:Name="RootGrid" Opacity="0">
+        <Grid.RenderTransform>
+            <TranslateTransform x:Name="RootTranslate" Y="0"/>
+        </Grid.RenderTransform>
+
+        <!-- Переливающийся фон -->
+        <Border CornerRadius="0">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop x:Name="GStop1" Color="#1E3A5F" Offset="0"/>
+                    <GradientStop x:Name="GStop2" Color="#2D6A4F" Offset="0.5"/>
+                    <GradientStop x:Name="GStop3" Color="#4A1942" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+
+        <DockPanel Margin="28">
+            <!-- Заголовок -->
+            <StackPanel DockPanel.Dock="Top" Margin="0,0,0,20">
+                <TextBlock Text="{Binding Name}"
+                           FontFamily="Segoe UI" FontSize="22" FontWeight="Bold"
+                           Foreground="White" TextWrapping="Wrap"/>
+                <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                    <Border Background="#FFFFFF20" CornerRadius="4" Padding="8,3" Margin="0,0,8,0">
+                        <TextBlock FontFamily="Segoe UI" FontSize="12" Foreground="#90CDF4">
+                            <Run Text="📅 "/>
+                            <Run Text="{Binding DateDisplay, Mode=OneWay}"/>
+                        </TextBlock>
+                    </Border>
+                    <Border Background="#FFFFFF20" CornerRadius="4" Padding="8,3" Margin="0,0,8,0">
+                        <TextBlock FontFamily="Segoe UI" FontSize="12" Foreground="#9AE6B4">
+                            <Run Text="📍 "/>
+                            <Run Text="{Binding Location}"/>
+                        </TextBlock>
+                    </Border>
+                    <Border Background="#FFFFFF20" CornerRadius="4" Padding="8,3">
+                        <TextBlock FontFamily="Segoe UI" FontSize="12" Foreground="#FBD38D">
+                            <Run Text="🏷️ "/>
+                            <Run Text="{Binding Section}"/>
+                        </TextBlock>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Кнопки внизу -->
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal"
+                        HorizontalAlignment="Right" Margin="0,16,0,0">
+                <Button Content="Закрыть"
+                        Template="{StaticResource BtnTpl}"
+                        Background="#FFFFFF25" Foreground="White"
+                        FontFamily="Segoe UI" FontSize="13"
+                        Padding="20,9" BorderThickness="0"
+                        Click="BtnClose_Click"/>
+            </StackPanel>
+
+            <!-- Описание + участники -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- Описание -->
+                    <TextBlock Text="Описание" FontFamily="Segoe UI" FontSize="12"
+                               Foreground="#A0AEC0" Margin="0,0,0,6"/>
+                    <Border Background="#FFFFFF15" CornerRadius="8" Padding="14,10" Margin="0,0,0,20">
+                        <TextBlock Text="{Binding Description}"
+                                   FontFamily="Segoe UI" FontSize="13"
+                                   Foreground="#E2E8F0" TextWrapping="Wrap"/>
+                    </Border>
+
+                    <!-- Участники -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="Участники" FontFamily="Segoe UI" FontSize="12"
+                                   Foreground="#A0AEC0" VerticalAlignment="Center"/>
+                        <Border Background="#2B6CB0" CornerRadius="8" Padding="7,2" Margin="8,0,0,0">
+                            <TextBlock Text="{Binding ParticipantCount, Mode=OneWay}"
+                                       FontFamily="Segoe UI" FontSize="11"
+                                       FontWeight="Bold" Foreground="White"/>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- ListBox участников с привязкой -->
+                    <ListBox ItemsSource="{Binding Participants}"
+                             Background="Transparent" BorderThickness="0"
+                             MaxHeight="160"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#FFFFFF12" CornerRadius="6"
+                                        Padding="10,7" Margin="0,2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Width="26" Height="26"
+                                                CornerRadius="13" Background="#4A90D9">
+                                            <TextBlock Text="{Binding LastName[0]}"
+                                                       FontFamily="Segoe UI" FontSize="11"
+                                                       FontWeight="Bold" Foreground="White"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Text="{Binding FullName}"
+                                                   FontFamily="Segoe UI" FontSize="12"
+                                                   Foreground="White" Margin="10,0,0,0"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding Section}"
+                                                   FontFamily="Segoe UI" FontSize="10"
+                                                   Foreground="#9AE6B4" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <ContentPresenter/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+    </Grid>
+</Window>
